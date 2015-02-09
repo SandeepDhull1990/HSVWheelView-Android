@@ -118,6 +118,7 @@ public class HSLWheelView extends View {
         } else {
             size = height;
         }
+        Log.d("TAG","HSL View Size is " + width + " -- " + height);
         setMeasuredDimension(size, size);
     }
 

@@ -40,6 +40,14 @@ public class ColorPickerView extends ViewGroup{
 
         addView(mWheeView);
 
+        mThumbView = new ColorPickerThumbView(getContext());
+
+        ViewGroup.LayoutParams params2 = new LayoutParams(getResources().getDimensionPixelSize(R.dimen.colorpicker_thumb_radius),getResources().getDimensionPixelSize(R.dimen.colorpicker_thumb_radius));
+
+        mThumbView.setLayoutParams(params2);
+
+        addView(mThumbView);
+
     }
 
     @Override
@@ -57,6 +65,7 @@ public class ColorPickerView extends ViewGroup{
             measureChild(v,widthMeasureSpec,heightMeasureSpec);
 
         }
+        Log.d("TAG","Layout Size is " + MeasureSpec.getSize(widthMeasureSpec) + " - " + MeasureSpec.getSize(heightMeasureSpec));
 
         setMeasuredDimension(mWheeView.getMeasuredWidth(), mWheeView.getMeasuredHeight());
     }
@@ -70,7 +79,7 @@ public class ColorPickerView extends ViewGroup{
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         for(int i = 0 ; i < getChildCount(); i++) {
             View v = getChildAt(i);
-            v.layout(20,20,r - l - 40 ,b - t - 40);
+            v.layout(20,20,v.getMeasuredWidth() ,v.getMeasuredHeight());
         }
     }
 }

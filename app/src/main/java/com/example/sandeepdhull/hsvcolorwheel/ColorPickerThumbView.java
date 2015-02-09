@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -67,6 +68,7 @@ public class ColorPickerThumbView extends View implements Drawable.Callback {
         } else {
             size = height;
         }
+        Log.d("TAG","Thumb Size is " + width + " -- " + height);
         setMeasuredDimension(size, size);
     }
 
