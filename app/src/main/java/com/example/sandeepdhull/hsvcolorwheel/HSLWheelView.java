@@ -26,6 +26,10 @@ public class HSLWheelView extends View {
     private Handler mHandler;
     private boolean mIsTaskFinished;
 
+    public Point mCenter;
+    public int mRadius;
+
+
     public HSLWheelView(Context context) {
         super(context);
         initialize();
@@ -48,6 +52,7 @@ public class HSLWheelView extends View {
         mPaint.setAntiAlias(true);
 
         mHandler = new Handler();
+        width = height = -1;
     }
 
     @Override
@@ -56,18 +61,18 @@ public class HSLWheelView extends View {
         width = w;
         height = h;
 
+        mIsTaskFinished = true;
 //        Create bitmap of this size
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                createRenderScriptBitmap();
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                createRenderScriptBitmap();
+//            }
+//        }).start();
+        createRenderScriptBitmap();
     }
 
     private void createRenderScriptBitmap() {
-
-        int length = width * height;
 
         RenderScript rsCtx;
         ScriptC_file scriptC_file;
@@ -78,6 +83,9 @@ public class HSLWheelView extends View {
         scriptC_file.set_radius(width / 2);
         scriptC_file.set_centerX(width / 2);
         scriptC_file.set_centerY(height / 2);
+
+        mCenter = new Point(width / 2,height/2);
+        mRadius = width/2;
 
         Bitmap outBitmap;
         Allocation outAlloc;
@@ -92,12 +100,12 @@ public class HSLWheelView extends View {
 
         mIsTaskFinished = true;
         mColorWheelBitmap = outBitmap;
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
-            }
-        });
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                invalidate();
+//            }
+//        });
         rsCtx.destroy();
     }
 
@@ -118,7 +126,6 @@ public class HSLWheelView extends View {
         } else {
             size = height;
         }
-        Log.d("TAG","HSL View Size is " + width + " -- " + height);
         setMeasuredDimension(size, size);
     }
 
@@ -136,11 +143,8 @@ public class HSLWheelView extends View {
 
         Point centerPoint = new Point(width / 2, height / 2);
         int radius = width / 2;
-        int x = 0;
-        int y = 0;
-
-        for (y = 0; y < height; y++) {
-            for (x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 Point point = new Point(x, y);
                 int saturation = isPointInsideCircle(point, centerPoint, radius);
 
@@ -172,7 +176,7 @@ public class HSLWheelView extends View {
     }
 
 
-    private int angleFromCenter(Point point, Point center) {
+    public int angleFromCenter(Point point, Point center) {
         int dx = point.x - center.x;
         int dy = point.y - center.y;
 
@@ -185,7 +189,7 @@ public class HSLWheelView extends View {
         return angleInDegrees;
     }
 
-    private int isPointInsideCircle(Point point, Point center, int radius) {
+    public int isPointInsideCircle(Point point, Point center, int radius) {
         int dx = point.x - center.x;
         int dy = point.y - center.y;
 
@@ -201,6 +205,27 @@ public class HSLWheelView extends View {
             return distance;
         }
         return -1;
+    }
+
+    public Point getPoint(int color) {
+        float hsv[] = new float[3];
+
+        Color.colorToHSV(color, hsv);
+
+        int hue = (int)hsv[0];
+        int saturation = (int)hsv[1];
+        int size = 0;
+        if(width == -1) {
+            size = getMeasuredWidth();
+        } else {
+            size = width;
+        }
+
+        int x = (int) ((size/2) + saturation * Math.cos(hue));
+        int y = (int) ((size/2) + saturation * Math.sin(hue));
+
+        Point point = new Point(x,y);
+        return point;
     }
 
 

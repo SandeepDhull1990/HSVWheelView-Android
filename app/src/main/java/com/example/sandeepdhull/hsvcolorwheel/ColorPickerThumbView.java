@@ -1,14 +1,17 @@
 package com.example.sandeepdhull.hsvcolorwheel;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -41,17 +44,16 @@ public class ColorPickerThumbView extends View implements Drawable.Callback {
     private void initialize() {
         mColor = Color.WHITE;
         mDrawable = new GradientDrawable();
-        mDrawable.setColor(Color.CYAN);
+        mDrawable.setColor(Color.WHITE);
         mDrawable.setShape(GradientDrawable.OVAL);
-        mDrawable.setStroke(3, Color.LTGRAY);
-
+        mDrawable.setStroke(2, Color.LTGRAY);
         mDrawable.setCallback(this);
 
 
         mShadowDrawable = new GradientDrawable();
         mShadowDrawable.setColor(Color.BLACK);
         mShadowDrawable.setShape(GradientDrawable.OVAL);
-        mShadowDrawable.setAlpha(100);
+        mShadowDrawable.setAlpha(50);
 
         filter = new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, 0);
     }
@@ -68,7 +70,6 @@ public class ColorPickerThumbView extends View implements Drawable.Callback {
         } else {
             size = height;
         }
-        Log.d("TAG","Thumb Size is " + width + " -- " + height);
         setMeasuredDimension(size, size);
     }
 
@@ -78,7 +79,7 @@ public class ColorPickerThumbView extends View implements Drawable.Callback {
 
         mShadowDrawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
         mShadowDrawable.draw(canvas);
-        mDrawable.setBounds(0,0,canvas.getWidth() - 3,canvas.getHeight() - 3);
+        mDrawable.setBounds(2,2,canvas.getWidth() - 2,canvas.getHeight() - 2);
         mDrawable.draw(canvas);
     }
 
@@ -86,9 +87,16 @@ public class ColorPickerThumbView extends View implements Drawable.Callback {
         return mColor;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setColor(int mColor) {
         this.mColor = mColor;
         mDrawable.setColor(mColor);
+        mDrawable.setColorFilter(mColor, PorterDuff.Mode.OVERLAY);
         mDrawable.invalidateSelf();
+    }
+
+    @Override
+    public void invalidateDrawable(Drawable drawable) {
+        invalidate();
     }
 }

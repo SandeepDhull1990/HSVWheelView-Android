@@ -4,14 +4,19 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    ColorPickerView mColorPickerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mColorPickerView = (ColorPickerView) findViewById(R.id.colorPicker);
     }
 
 
@@ -35,5 +40,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void showPicker(View v) {
+        if(mColorPickerView.getVisibility() == View.VISIBLE) {
+            mColorPickerView.setVisibility(View.GONE);
+        } else {
+            mColorPickerView.setVisibility(View.VISIBLE);
+        }
     }
 }
